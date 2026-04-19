@@ -4,19 +4,20 @@ from django.test import TestCase
 from .models import Customer
 
 
-CURRENT_DIR = Path(__file__).resolve().parent
+CURRENT_DIR: str = Path(__file__).resolve().parent
+CSV_PATH: str  = CURRENT_DIR / "customers-100.csv"
 
 class CSVImporterTests(TestCase):
     """
     for testing functions realted to CSV
     """
-    def test_csv_and_model_object_have_same_headers(self, csv_path: str = CURRENT_DIR / "customers-100.csv"):
+    def test_csv_and_model_object_have_same_headers(self):
         """
         make sure the headers for the db and the csv match"
         """
         customer_fields = [field.name for field in Customer._meta.fields]
 
-        with open(csv_path, "r") as file:
+        with open(CSV_PATH, "r") as file:
             reader = csv.reader(file)
             headers = next(reader)
 
@@ -27,3 +28,5 @@ class CSVImporterTests(TestCase):
             headers[index] = header
 
         self.assertEqual(customer_fields, headers)
+
+    # def test_csv_data_matches_db_data(self, )
