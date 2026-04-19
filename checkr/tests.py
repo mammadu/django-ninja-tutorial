@@ -1,7 +1,10 @@
+from django.test import TestCase
 import csv
 from pathlib import Path
-from django.test import TestCase
-from .models import Customer
+from datetime import date
+from .models import Customer, load_csv_to_database
+
+from django.forms.models import model_to_dict
 
 
 CURRENT_DIR: str = Path(__file__).resolve().parent
@@ -29,4 +32,22 @@ class CSVImporterTests(TestCase):
 
         self.assertEqual(customer_fields, headers)
 
-    # def test_csv_data_matches_db_data(self, )
+    def test_csv_data_matches_db_data(self):
+        """
+        a properly formatted csv should be loaded into the database
+        """
+        load_csv_to_database(CSV_PATH)
+        customers = Customer.objects.values()
+
+        customer_fields = [field.name for field in Customer._meta.fields]
+        rows = []
+        with open(CSV_PATH, "r") as file:
+            reader = csv.DictReader(file, fieldnames=customer_fields)
+            headers = next(reader)
+            for row in reader:
+                row["index"] = int(row["index"])
+                split_date = row["subscription_date"].split("-")
+                row["subscription_date"] = date(*map(int, split_date))
+                rows.append(row)
+        for index, customer in enumerate(customers):
+            self.assertEqual(customer, rows[index])
