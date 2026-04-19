@@ -39,15 +39,17 @@ class CSVImporterTests(TestCase):
         load_csv_to_database(CSV_PATH)
         customers = Customer.objects.values()
 
+        # read csv file and perform formatting for comparison to database
         customer_fields = [field.name for field in Customer._meta.fields]
         rows = []
         with open(CSV_PATH, "r") as file:
             reader = csv.DictReader(file, fieldnames=customer_fields)
-            headers = next(reader)
+            next(reader) # skips the header line
             for row in reader:
                 row["index"] = int(row["index"])
                 split_date = row["subscription_date"].split("-")
                 row["subscription_date"] = date(*map(int, split_date))
                 rows.append(row)
+
         for index, customer in enumerate(customers):
             self.assertEqual(customer, rows[index])
