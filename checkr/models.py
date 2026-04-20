@@ -18,7 +18,7 @@ class Customer(models.Model):
 def load_csv_to_database(csv_path: str) -> None:
     with open(csv_path, "r") as file:
         reader = csv.reader(file)
-        header = next(reader)
+        next(reader)
         for row in reader:
             field_names = [field.name for field in Customer._meta.fields]
             dictionary = {field_names[i]: row[i] for i in range(len(field_names))}

@@ -45,7 +45,7 @@ class CSVImporterTests(TestCase):
         with open(CSV_PATH, "r") as file:
             reader = csv.DictReader(file, fieldnames=customer_fields)
             next(reader) # skips the header line
-            for row in reader:
+            for row in reader: # we must convert yyy-mm-dd to date objects
                 row["index"] = int(row["index"])
                 split_date = row["subscription_date"].split("-")
                 row["subscription_date"] = date(*map(int, split_date))
