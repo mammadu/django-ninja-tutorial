@@ -1,7 +1,7 @@
 from django.db import models
 import csv
 
-class Customer(models.Model):
+class CSV_Object(models.Model):
     index = models.IntegerField(primary_key=True)
     customer_id = models.CharField(max_length=15)
     first_name = models.CharField(max_length=100)
@@ -20,7 +20,7 @@ def load_csv_to_database(csv_path: str) -> None:
         reader = csv.reader(file)
         next(reader)
         for row in reader:
-            field_names = [field.name for field in Customer._meta.fields]
+            field_names = [field.name for field in CSV_Object._meta.fields]
             dictionary = {field_names[i]: row[i] for i in range(len(field_names))}
-            customer = Customer(**dictionary)
-            customer.save()
+            csv_object = CSV_Object(**dictionary)
+            csv_object.save()
