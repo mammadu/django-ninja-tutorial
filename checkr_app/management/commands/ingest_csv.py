@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 csv_object.save()
 
     def add_arguments(self, parser):
-        parser.add_argument("-a", "--app", default="checkr_app")
+        parser.add_argument("-a", "--app", default="checkr_app", help="the app containing the model. Is set to 'checkr_app' by default")
         parser.add_argument("model", help="the model from models.py that has the csv structure")
         parser.add_argument("path_to_csv", help="path to csv file")
 
